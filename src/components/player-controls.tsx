@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { SkipBack, SkipForward, Shuffle, Repeat, Play, Pause, Volume2, VolumeX } from "lucide-react"
+import { useState } from "react"
 
 interface PlayerControlsProps {
   isPlaying: boolean
@@ -32,12 +33,19 @@ export function PlayerControls({
   onVolumeSliderChange,
   className = "",
 }: PlayerControlsProps) {
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      onPause()
-    } else {
-      onPlay()
-    }
+  const [isButtonLoading, setIsButtonLoading] = useState(false)
+
+  const handlePlayPause = async () => {
+    if (isLoading || isButtonLoading) return
+    setIsButtonLoading(true)
+    setTimeout(() => {
+      setIsButtonLoading(false)
+      if (isPlaying) {
+        onPause()
+      } else {
+        onPlay()
+      }
+    }, 500)
   }
 
   const buttonVariants = {
@@ -58,16 +66,19 @@ export function PlayerControls({
 
   const playButtonVariants = {
     playing: {
-      backgroundColor: "rgb(168 85 247)", // purple-500
+      backgroundColor: "hsl(var(--primary))",
       scale: 1,
+      transition: { type: "spring", duration: 0.3 },
     },
     paused: {
-      backgroundColor: "rgb(168 85 247)", // purple-500
+      backgroundColor: "hsl(var(--primary))",
       scale: 1,
+      transition: { type: "spring", duration: 0.3 },
     },
     loading: {
-      backgroundColor: "rgb(107 114 128)", // gray-500
+      backgroundColor: "hsl(var(--muted-foreground))",
       scale: 1,
+      transition: { type: "spring", duration: 0.3 },
     },
   }
 
@@ -121,15 +132,15 @@ export function PlayerControls({
         {/* Play/Pause */}
         <motion.button
           onClick={handlePlayPause}
-          disabled={isLoading}
+          disabled={isLoading || isButtonLoading}
           className="w-12 h-12 rounded-full text-white shadow-lg flex items-center justify-center"
           variants={playButtonVariants}
-          animate={getCurrentPlayButtonState()}
-          whileHover={!isLoading ? "hover" : undefined}
-          whileTap={!isLoading ? "tap" : undefined}
+          animate={isLoading || isButtonLoading ? "loading" : getCurrentPlayButtonState()}
+          whileHover={!isLoading && !isButtonLoading ? { scale: 1.05 } : undefined}
+          whileTap={!isLoading && !isButtonLoading ? { scale: 0.95 } : undefined}
           style={{ willChange: "transform" }}
         >
-          {isLoading ? (
+          {(isLoading || isButtonLoading) ? (
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}

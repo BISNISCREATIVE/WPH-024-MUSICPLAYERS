@@ -47,11 +47,11 @@ export function Equalizer({ isPlaying, isLoading, getFrequencyData, className = 
   }
 
   return (
-    <div className={`flex items-end gap-0.5 h-6 ${className}`}>
+    <div className={`flex items-end gap-[1px] h-[24px] ${className}`}>
       {bars.map((bar, index) => (
         <motion.div
           key={bar}
-          className="bg-gradient-to-t from-purple-600 to-purple-400 rounded-sm"
+          className="bg-gradient-to-t from-purple-600 to-purple-400 rounded-sm gpu-accelerated"
           style={{
             width: "4px",
             minHeight: "4px",

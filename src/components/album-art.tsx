@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion"
 import { Music } from "lucide-react"
+import Image from "next/image"
+import { useEffect, useState, useRef } from "react"
 
 interface AlbumArtProps {
   isPlaying: boolean
@@ -13,40 +15,15 @@ export function AlbumArt({ isPlaying, isLoading, className = "" }: AlbumArtProps
   const albumVariants = {
     playing: {
       scale: 1,
-      rotate: 360,
-      transition: {
-        scale: {
-          duration: 0.3,
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        },
-        rotate: {
-          duration: 20,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-        },
-      },
+      transition: { type: "spring", duration: 0.3 },
     },
     paused: {
       scale: 0.95,
-      rotate: 0,
-      transition: {
-        duration: 0.3,
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
+      transition: { type: "spring", duration: 0.3 },
     },
     loading: {
       scale: 0.9,
-      rotate: 0,
-      transition: {
-        duration: 0.3,
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
+      transition: { type: "spring", duration: 0.3 },
     },
   }
 
@@ -66,6 +43,29 @@ export function AlbumArt({ isPlaying, isLoading, className = "" }: AlbumArtProps
     return "paused"
   }
 
+  const getAlbumImage = () => {
+    if (isLoading) return "/images/album-loading.png"
+    if (isPlaying) return "/images/album-playing.png"
+    return "/images/album-art.png"
+  }
+
+  const [clockwise, setClockwise] = useState(true)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setClockwise((prev) => !prev)
+      }, 15000)
+    } else {
+      setClockwise(true)
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [isPlaying])
+
   return (
     <motion.div
       className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${getGradientClass()} ${className}`}
@@ -75,7 +75,25 @@ export function AlbumArt({ isPlaying, isLoading, className = "" }: AlbumArtProps
       style={{ willChange: "transform" }}
     >
       <div className="w-full h-full flex items-center justify-center">
-        <Music className="w-12 h-12 text-black/80" />
+        {isPlaying && (
+          <motion.div
+            className="absolute"
+            style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+            animate={{ rotate: clockwise ? 360 : -360 }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+          >
+            <svg width="120" height="120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#a4508b" strokeWidth="8" />
+            </svg>
+          </motion.div>
+        )}
+        <motion.div
+          animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+          transition={isPlaying ? { repeat: Infinity, duration: 20, ease: 'linear' } : { duration: 0.3 }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Image src="/images/music-icon.png" alt="Music Icon" width={96} height={96} />
+        </motion.div>
       </div>
 
       {/* Loading overlay */}

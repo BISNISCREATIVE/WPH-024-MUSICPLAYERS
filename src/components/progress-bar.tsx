@@ -39,13 +39,13 @@ export function ProgressBar({
 
   const progressVariants = {
     playing: {
-      backgroundColor: "rgb(168 85 247)", // purple-500
+      backgroundColor: "hsl(var(--primary))", // gunakan token ungu utama
     },
     paused: {
-      backgroundColor: "rgb(107 114 128)", // gray-500
+      backgroundColor: "hsl(var(--muted-foreground))", // gunakan token abu
     },
     loading: {
-      backgroundColor: "rgb(75 85 99)", // gray-600
+      backgroundColor: "hsl(var(--muted))", // gunakan token abu gelap
     },
   }
 
@@ -61,7 +61,7 @@ export function ProgressBar({
       onClick={handleClick}
     >
       <motion.div
-        className="absolute top-0 left-0 h-full rounded-full"
+        className="absolute top-0 left-0 h-full rounded-full will-change-transform"
         style={{ width: `${progress}%` }}
         variants={progressVariants}
         animate={getCurrentState()}

@@ -73,19 +73,19 @@ export function MusicPlayer({ tracks, className = "" }: MusicPlayerProps) {
   // Container variants for background and shadow transitions
   const containerVariants = {
     playing: {
-      backgroundColor: "rgb(17 24 39)", // gray-900
-      boxShadow: "0 25px 50px -12px rgba(168, 85, 247, 0.25), 0 0 0 1px rgba(168, 85, 247, 0.1)",
-      transition: { duration: 0.3 },
+      backgroundColor: "#000",
+      boxShadow: "0 0 24px 0 rgba(168, 85, 247, 0.5)", // purple glow
+      transition: { duration: 0.3, ease: "easeInOut" },
     },
     paused: {
-      backgroundColor: "rgb(17 24 39)", // gray-900
-      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(75, 85, 99, 0.1)",
-      transition: { duration: 0.3 },
+      backgroundColor: "#000",
+      boxShadow: "0 0 16px 0 rgba(0,0,0,0.25)", // dark shadow
+      transition: { duration: 0.3, ease: "easeInOut" },
     },
     loading: {
-      backgroundColor: "rgb(17 24 39)", // gray-900
-      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(75, 85, 99, 0.05)",
-      transition: { duration: 0.3 },
+      backgroundColor: "#000",
+      boxShadow: "0 0 8px 0 rgba(168, 85, 247, 0.2)", // subtle purple
+      transition: { duration: 0.3, ease: "easeInOut" },
     },
   }
 
